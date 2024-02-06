@@ -44,19 +44,64 @@ Future<Response> _startHandler(Request request) async {
   return Response.ok('ok');
 }
 
+List<Direction> logicalMoves(game){
+  List<Direction> moves;
+  for(dir in Direction.values){
+        var position = data['you']['head'];
+    switch(move){
+      case Direction.up:
+        position['y']++;
+        break;
+      case Direction.down:
+        position['y']--;
+        break;
+      case Direction.left:
+        position['x']--;
+        break;
+      case Direction.right:
+        position['x']++;
+        break;
+      default:break;
+    }
+    if(position['x'] >= 0 && position['x'] < data['board']['width'] && position['y'] >= 0 && position['y'] < data['board']['height']){
+      bool allLegal = true;
+      for(var pos in data['you']['body']){
+        if(pos['x'] == position['x'] && pos['y'] == position['y']){
+          allLegal = false;
+        }
+      }
+      if(allLegal){
+        legal = true;
+      }
+    }
+        switch(move){
+      case Direction.up:
+        position['y']--;
+        break;
+      case Direction.down:
+        position['y']++;
+        break;
+      case Direction.left:
+        position['x']++;
+        break;
+      case Direction.right:
+        position['x']--;
+        break;
+      default:break;
+    }
+  }
+}
+
+
 /// Request handler for the Move path
 Future<Response> _moveHandler(Request request) async {
   final gameData = await request.readAsString();
-  // TODO:
-  // reference the GameData object
-  // Handle some special logic written by you
-  // Return your move!
-
-  // All the possible moves
-  final possibleMoves = Direction.values;
+    var data = json.decode(gameData);
+  // All the possible and logical moves
+  final logicalMoves = logicalMoves(data)
   // choose a move based on logic... random, in this case.
   var move = Direction.down;
-  var data = json.decode(gameData);
+
   bool legal = false;
   do{
     move = possibleMoves.elementAt(Random().nextInt(possibleMoves.length));
